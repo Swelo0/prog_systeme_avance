@@ -1,0 +1,65 @@
+----------
+ 29/10/14
+----------
+
+syscall_handler(int n, int arg1, int arg2, ...)
+
+n --> 0 : print_string
+      1 : read_string
+      ...
+Conseillé avoir un fichier header qui référence les appels systèmes
+
+Interruption (assembleur) va chercher en mémoire un sous-programme.
+Chaque entrée dans la mémoire à partir de 0000 contient l'adresse 
+de l'interruption correspondante.
+
+Par exemple : en faisant int 0x10 le CPU jump à l'adresse 0x10 et 
+récupère l'adresse de la fonction 16.
+
+Donc à l'index 0x80 on va mettre l'adresse d'une fonction home-maid
+(syscall) pour qu'elle soit exécutée quand on appelle int 0x80
+
+- init_syscall() écrase l'adresse 0x80 afin qu'il appelle syscall_handler
+- interrupt(0x80, 1, 2, 3, 4) appelle syscall_handler(n, args*) en
+  fonction des args de interrupt()
+- syscall_handler() appelle aussi des interruptions, en fonction des args
+
+----------
+ 05/11/14
+----------
+
+Utilisation interruption 13, fonction 42
+------------------------------------------
+
+	; M load kernel at address KERN_SEG:0
+	mov ah, 0x42
+	mov dl, BOOT_DRIVE 	; set boot drive (0x80 for disk 1)
+	mov ds, segment_packet	; kernel segment (loaded at boot)
+	mov si, packet 		; packet address
+	int 0x13
+
+packet:
+	size		db 0x10
+	reserved	db 0
+	sect_count	dw KERN_SIZE
+	addr_offset	dw 0
+	addr_segment	dw KERN_SEG
+	first_sect	dq KERN_START	; first sector to read (index 0)
+ 
+3ème étape : systèmes de fichiers
+----------------------------------
+1 block = 2 segments = 1k
+
+- Bitmap contient les infos sur chaque blocs, à savoir s'ils sont libres ou occupés
+- File Entries contient les "meta-data" de tous les fichiers (nom, taille, index de stockage)
+- Les index dans file entries correspondent à des blocks dans File Contents
+
+note : Le système de fichier est dans le dossier /tools et indépendant du kernel
+
+	     disk.img
++------+--------+-------------+--------
+|   0  |    1   |      2      | 
++------+--------+-------------+--------
+| Boot | Kernel |    fs.img   | 000... 
++------+--------+-------------+--------
+		    
