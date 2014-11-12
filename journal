@@ -3,3 +3,8 @@
 ----------
 - Finition read_sector/write_sector
 - Création système fichier simple
+
+NEXT TIME
+
+Il faudrait modifier les appels systèmes et ne pas utiliser des valeurs
+numériques mais des constantes
