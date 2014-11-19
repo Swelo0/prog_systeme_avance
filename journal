@@ -4,7 +4,35 @@
 - Finition read_sector/write_sector
 - Création système fichier simple
 
-NEXT TIME
+----------
+ 19/11/10
+----------
+Fonctionnement sfsadd/del/list
 
-Il faudrait modifier les appels systèmes et ne pas utiliser des valeurs
-numériques mais des constantes
+sfsadd(FILE)
+	- Extraire infos de FILE
+	- Partitionner FILE en n blocs
+	- Pour chaque bloc :
+		- Trouver dans Bitmap le prochain bloc libre (bit à 0)
+		- Changer le bit à 1 et retourner l'index
+		- Renseigner l'index dans File Entries
+		- Stocker le contenu du bloc dans File Content au même index
+
+sfsdel(FILE)
+	- Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant
+	- Dans le File Entry, Changer en "0" le premier caractère du nom du fichier
+	- Pour chaque bloc du File Entry :
+		- Récupérer son index
+		- Mettre le bit correspondant dans Bitmap à 0
+		
+Parcours itératif :
+ - Stockage variable globale current_index dans le système de fichier (init à 0 dans le constructeur)
+ x.nextFile() :
+  - S'il y a une entry qui ne commence pas par "0" :
+   - File_Entry[current_index].Name
+   (256 bytes = 1/4 bloc par file entry, 16 blocs pour les file entries ==> 64 fichiers possibles)
+   - Si current_index < 63
+      Incrémentation current_index
+   - Sinon
+      current_index = 0 (peut-être faire une fonction x.resetIndex() pour être plus flexible) 
+     
