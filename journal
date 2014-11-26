@@ -36,3 +36,7 @@ Parcours itératif :
    - Sinon
       current_index = 0 (peut-être faire une fonction x.resetIndex() pour être plus flexible) 
      
+----------
+ 26/11/10
+----------
+ - Débogage construction structure "filesystem"
