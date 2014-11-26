@@ -32,9 +32,11 @@ kernel:
 	bcc -W -V -I -ansi -c kernel_/main.c
 	bcc -W -V -I -ansi -c kernel_/kernel.c
 	bcc -W -V -I -ansi -c kernel_/syscall_handler.c
+	bcc -W -V -I -ansi -c kernel_/disk.c
 	as86 -o kernel_/util_asm.o kernel_/util_asm.s
+	as86 -o kernel_/disk_asm.o kernel_/disk_asm.s
 	as86 -o kernel_/init_syscall.o kernel_/init_syscall.s
-	ld86 -M -m -d -s -o kernel_/kernel.img kernel_/main.o kernel_/kernel.o kernel_/syscall_handler.o kernel_/util_asm.o kernel_/init_syscall.o
+	ld86 -M -m -d -s -o kernel_/kernel.img kernel_/main.o kernel_/kernel.o kernel_/syscall_handler.o kernel_/util_asm.o kernel_/init_syscall.o kernel_/disk.o kernel_/disk_asm.o
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $(SRC)   

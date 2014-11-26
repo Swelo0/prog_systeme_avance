@@ -31,7 +31,7 @@ void kernel() {
 	interrupt(0x80, 4, 5, sect, 0); // write_sector
 	interrupt(0x80, 1, "\r\n", 0, 0); // print_string
 	interrupt(0x80, 1, sect, 0, 0); // print_string
-	interrupt(0x80, 1, "Le secteur 6 a bien ete modifie. Pour contrôler, c'est l'adresse 0xA00", 0, 0); // print_string, 0, 0); // print_string
+	interrupt(0x80, 1, "Le secteur 6 a bien ete modifie. Pour controler, c'est l\'adresse 0xA00", 0, 0); // print_string, 0, 0); // print_string
 	while(1);
 }
 
