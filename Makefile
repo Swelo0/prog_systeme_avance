@@ -11,15 +11,23 @@ debug :
 	xterm -e qemu-system-i386 -monitor stdio -hda disk.img -s -S & xterm -fn 6x10 -geometry 92x73+0+0 -e 
 	gdb -x debugargs
 
+# n°1 on lit 16425 secteurs de 512 bytes de 0 et on écrit dans disk
+# n°2 on lit boot que l'on écris dans disk au secteur 0
+# n°3 on lit kernel que l'on écris dans disk au secteur 1
+# on va commencer notre SFS au secteur 5
 disk.img:boot kernel 
-	dd if=/dev/zero of=disk.img bs=512 count=100 
+	dd if=/dev/zero of=disk.img bs=512 count=16425 
 	dd conv=notrunc seek=0 if=boot_/boot of=disk.img 
 	dd conv=notrunc seek=1 if=kernel_/kernel.img of=disk.img
-	@echo "\033[32;1m[>>] [KERNEL ] Created bootable disk image "\""disk.img"\""\033[0m"
+	dd conv=notrunc seek=5 if=tools_/test.txt of=disk.img
+	@echo "\033[32;1m[>>] [SYSTEME ] Creation de l'image disque bootable "\""disk.img"\""\033[0m"
 	
 boot: boot_/boot.asm
 	nasm boot_/boot.asm
-	
+
+#as86 : Compilation du code C en code objet
+#ld86 : Edition des liens (génération de l'image)
+#Toujours mettre main au début
 kernel: 
 	bcc -W -V -I -ansi -c kernel_/main.c
 	bcc -W -V -I -ansi -c kernel_/kernel.c
@@ -35,5 +43,8 @@ clean:
 	rm -f *.c *.o
 	rm -f kernel_/kernel boot_/boot disk.img 
 	rm -f kernel_/*.o kernel_/kernel.img
-build  : boot kernel
-rebuild: clean boot kernel
+build  : 
+	boot kernel
+	
+rebuild: 
+	clean boot kernel
