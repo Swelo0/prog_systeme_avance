@@ -12,6 +12,12 @@ typedef struct superblock {
 	int16 	file_content_size;
 } superblock;
 
+// 32bytes+112*(2bytes) = 256 bytes
+typedef struct fileEntries {
+	char[32]   name;
+	int16[112] index;
+} fileEntries;
+
 typedef struct filesystem {
 	//superblock   sb          ;
 	struct superblock {
@@ -23,8 +29,8 @@ typedef struct filesystem {
 		int16 	file_content_size;
 	} 			 sb          ;
 	block	     bitmap      ;
-	block[16]    file_entry  ;
-	block[8191]  file_content;		
+	fileEntries[16*4]  file_entry  ; // 16 blocks
+	block[8191]  file_content;	     //	
 } filesystem;
 
 filesystem sfscreate() {
