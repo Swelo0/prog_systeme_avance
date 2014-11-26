@@ -5,9 +5,9 @@ A_CONSTANT	equ	0x100 ; Constante valant 256 d'une utilité pour le moment obscur
 	
 	; setup stack
 	
-	mov ax, 0x7ff0        	; On positionne la pile looooiiiinnnnn très loooiiiiin
+	mov ax, 0x2000        	; On positionne la pile looooiiiinnnnn très loooiiiiin
     mov ss, ax				; On avance de 16 bits pour que ss:sp donne bien 16 de large
-    mov sp, 0xff			; sp prend la valeur de 4096
+    mov sp, 0xffff			; sp prend la valeur de 4096
     
     ; reset drive
     ; reset:
@@ -17,7 +17,7 @@ A_CONSTANT	equ	0x100 ; Constante valant 256 d'une utilité pour le moment obscur
 		
 	; initialize segments
 	
-	mov ax, 0x1000			; 
+	mov ax, 0x2000			; 
 	mov es, ax				; On met la valeur 0x1000 pour l'extra segment
 	
 	; display message
@@ -58,7 +58,7 @@ A_CONSTANT	equ	0x100 ; Constante valant 256 d'une utilité pour le moment obscur
 	packet:
 		size db 0x10 ;
 		reserved db 0
-		sect_count dw 0xff
+		sect_count dw 0x20
 		addr_offset dw 0
 		addr_segment dw 0x2000
 		first_sect dq 0x1
@@ -68,3 +68,4 @@ A_CONSTANT	equ	0x100 ; Constante valant 256 d'une utilité pour le moment obscur
 
 	; last 2 bytes of sector: indicate a bootable sector
 	dw 0xAA55
+
