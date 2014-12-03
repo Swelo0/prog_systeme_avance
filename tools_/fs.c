@@ -50,11 +50,12 @@ void sfslist(filesystem fs) {
 }
 
 // Ajout
-void sfsadd(filesystem fs, char file[]) {
+void sfsadd(filesystem fs, char fileName[]) {
 
 	FILE* fp;
 	block blockTemp;
 	int   ptByte = 0;
+	char  ch;
 	int	  fileLen, numEntry, currentBlock = 0, numBlock = 0;
 	
 	fp = fopen(fileName,"r"); // read mode
@@ -67,13 +68,17 @@ void sfsadd(filesystem fs, char file[]) {
 	
 	//On trouve une entrée libre.
 	numEntry = 0;
-	while (fs.fe.entry[numEntry].name[0] == '0')
+	while (fs.fe[numEntry].name[0] == '0')
 		numEntry++;
+	
+	strcpy(fs.fe[numEntry].name, fileName);
 	
 	//Get file length
 	fseek(fp, 0, SEEK_END);
 	fileLen=ftell(fp); //Nombre de byte dans le fichier
 	fseek(fp, 0, SEEK_SET);
+	
+	fs.fe[numEntry].size = fileLen;
 	
 	int i=0;
 	//On parcours le fichier par block (1024o) 
@@ -81,8 +86,13 @@ void sfsadd(filesystem fs, char file[]) {
 	{
 		fread( blockTemp , block_size , 1 , fp );
 		//On maj le bitmap et écris les données, writeBlock(...)
-		while !(fs.bitmap&1<<numBlocks++);
-		//fs.bitmap = fs.bitmap & 1<<numBlocks-1; // maj de bitmap. 
+		while (fs.bitmap&1<<numBlock++); //on trouve un block libre.
+		fs.bitmap |= 1<<numBlock-1; // maj de bitmap.
+		fs.fe[numEntry].blocs[currentBlock++] = numBlock; // écrit 2
+		// si le deuxième block est libre. (donc réellement le bloc[1])
+		//strcpy(fs.file_content[numBlock], blockTemp);
+		memmove(fs.file_content[numBlock], blockTemp, block_size);
+		
 	}
 	
 	//Quand il reste des données < 1024 on les lit et on rempli le reste
@@ -90,11 +100,22 @@ void sfsadd(filesystem fs, char file[]) {
 	//A FINIR, on remplie pas le rest
 	while( ( ch = fgetc(fp) ) != EOF )
 	{
-      blockTemp(ptByte++);
+      blockTemp[ptByte++] = ch;
       //ensuite on doit remplir de 0
 	}
-	//On maj le bitmap
-   fclose(fp);
+	blockTemp[ptByte] = '\0'; //A enlever
+	
+	//On maj le bitmap et écris les données, writeBlock(...)
+	numBlock = 0;
+	while (fs.bitmap&1<<numBlock++); //on trouve un block libre.
+	fs.bitmap |= 1<<numBlock-1; // maj de bitmap.
+	fs.fe[numEntry].blocs[currentBlock++] = numBlock; // écrit 2
+	// si le deuxième block est libre. (donc réellement le bloc[1])
+	//strcpy(fs.file_content[numBlock], blockTemp);
+	memmove(fs.file_content[numBlock], blockTemp, block_size);
+	
+	
+    fclose(fp);
   // return 0;
 	
 	// Infos du fichier (nom + taille)
@@ -112,6 +133,7 @@ void sfsadd(filesystem fs, char file[]) {
 
 }
 
+
 // Suppression fichier
 void sfsdel(filesystem fs, char file[]) {
 
@@ -119,7 +141,7 @@ void sfsdel(filesystem fs, char file[]) {
 	int index = -1;
 	while (strcmp(fs.fe[++index].name, file) != 0);
 
-	// 	==> Changer le premier caractère du nom du fichier et sa taille
+	// Changer le premier caractère du nom du fichier et sa taille
 	fs.fe[index].name[0] = '\0';
 	fs.fe[index].size    =  0 ;
 
