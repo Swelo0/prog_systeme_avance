@@ -1,4 +1,3 @@
-// fs.c
 #include "fs.h"
 
 // Création
@@ -20,9 +19,12 @@ filesystem sfscreate() {
 			sf.bitmap[i] = 0;
 
 		// Init du file entries à 0;
-		for (i = 0; i < 16; i++)
-			for (j = 0; j < 1024; j++)
-				sf.file_entry[i][j] = 0;
+		for (i = 0; i < 16; i++) {
+			sf.fe.entry[i].name[0] = '0';
+			sf.fe.entry[i].size    =  0 ;
+			for (j = 0; j < 222; j++)
+				sf.fe.entry[i].block[j] = 0;
+		}
 
 		return sf;
 
@@ -48,11 +50,24 @@ void sfsadd(char file[]) {
 }
 
 // Suppression
-void sfsdel() {
+void sfsdel(filesystem fs, char file[]) {
 
-	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant ==> Changer en "0" le premier caractère du nom du fichier
+	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant 
+	char name[] = "";
+	while (strcmp(name, file) != 0) {
+		name = fs.fe.entry[index].name
+	int index = 0; // On va dire
+
+	// 	==> Changer le premier caractère du nom du fichier et sa taille
+	fs.fe.entry[index].name[0] = '0';
+	fs.fe.entry[index].size    =  0 ;
+
 	// Pour chaque bloc du File Entry :
 	// 	Récupérer son index
 	//	Mettre le bit correspondant dans Bitmap à 0
+	int i;
+	for (i = 0; i < 222; i++)
+		if (fs.fe.entry[index].block[i] != 0)
+			bitmap[fs.fe.entry[index].block[i]] = 0;
 
 }
