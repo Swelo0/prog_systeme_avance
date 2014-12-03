@@ -118,7 +118,7 @@ void sfsadd(filesystem fs, char fileName[]) {
 	//	Sauvegarder le contenu dans File Content au même index
 
 }
-/*
+
 
 // Suppression fichier
 void sfsdel(filesystem fs, char file[]) {
@@ -141,4 +141,4 @@ void sfsdel(filesystem fs, char file[]) {
 		if (fs.fe.entry[index].block[i] != 0)
 			bitmap[fs.fe.entry[index].block[i]] = 0;
 
-}*/
+}
