@@ -1,7 +1,5 @@
 // fs.c
 #include "fs.h"
-#include <stdio.h>
-#include <string.h>
 
 // Création
 filesystem sfscreate() {
@@ -14,7 +12,7 @@ filesystem sfscreate() {
 		sf.sb.bitmap_size        = 1          ;
 		sf.sb.file_entry_size    = 256        ;
 		sf.sb.file_entry_blocks  = 16         ;
-		sf.sb.file_content_size  = 8192       ;
+		sf.sb.file_content_size  = 53         ;
 		
 		// Init du bitmap à 0;
 		int i,j;
