@@ -99,7 +99,7 @@ void sfsadd(filesystem fs, char file[]) {
 
 }
 
-// Suppression
+// Suppression fichier
 void sfsdel(filesystem fs, char file[]) {
 
 	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant 
