@@ -25,7 +25,7 @@ typedef struct filesystem { //__attribute__(__packed__) {
 
 	int64 bitmap ;
 	struct file_entries {
-	// Chaque entry prend 256 bytes
+		// Chaque entry prend 256 bytes
 		char  name[32];
 		int16 size;
 		// 256 - (32 + 2) = 222 bytes pour les index des blocs

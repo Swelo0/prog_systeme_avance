@@ -19,7 +19,7 @@ filesystem sfscreate() {
 		// Init du file entries à 0;
 		int i,j;
 		for (i = 0; i < 16; i++) {
-			sf.fe[i].name[0] = '0';
+			sf.fe[i].name[0] = '\0';
 			sf.fe[i].size    =  0 ;
 			for (j = 0; j < 222; j++)
 				sf.fe[i].blocs[j] = 0;
@@ -54,7 +54,7 @@ void sfsadd(filesystem fs, char fileName[]) {
 	
 	//On trouve une entrée libre.
 	numEntry = 0;
-	while (fs.fe[numEntry].name[0] == '0')
+	while (fs.fe[numEntry].name[0] == '\0')
 		numEntry++;
 	
 	strcpy(fs.fe[numEntry].name, fileName);
