@@ -14,17 +14,29 @@ filesystem sfscreate() {
 		sf.sb.file_content_size  = 53         ;
 		
 		// Init du bitmap à 0;
-		int i,j;
-		for (i = 0; i < 1024; i++)
-			sf.bitmap[i] = 0;
+		sf.bitmap = 0;
 
 		// Init du file entries à 0;
+		int i,j;
 		for (i = 0; i < 16; i++) {
-			sf.fe.entry[i].name[0] = '0';
-			sf.fe.entry[i].size    =  0 ;
+			sf.fe[i].name[0] = '\0';
+			sf.fe[i].size    =  0 ;
 			for (j = 0; j < 222; j++)
-				sf.fe.entry[i].block[j] = 0;
+				sf.fe[i].blocs[j] = 0;
 		}
+		// Dummy fichier (inexistant)
+		strcpy(sf.fe[3].name, "TestFile\0");
+		sf.fe[3].size = 3;
+		sf.fe[3].blocs[0] = 23;
+		sf.fe[3].blocs[1] = 42;
+		sf.fe[3].blocs[2] = 35;
+		int64_t one = 1;
+		sf.bitmap |= one << 23; 
+		sf.bitmap |= one << 42; 
+		sf.bitmap |= one << 35; 
+		strcpy(sf.file_content[23], "cahsidjahs\0");
+		strcpy(sf.file_content[42], "sdfhgsdh\0");
+		strcpy(sf.file_content[35], "siduhsdfjns\0");
 
 		return sf;
 
@@ -39,6 +51,7 @@ void sfslist(filesystem fs) {
 
 // Ajout
 void sfsadd(filesystem fs, char file[]) {
+
 	FILE* fp;
 	block blockTemp;
 	int   ptByte = 0;
@@ -102,28 +115,20 @@ void sfsadd(filesystem fs, char file[]) {
 // Suppression fichier
 void sfsdel(filesystem fs, char file[]) {
 
-	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant 
-	char *name;
+	// Parcourir File Entries jusqu'à trouver le fichier correspondant 
 	int index = -1;
-	while (strcmp(name, file) != 0) {
-		index++;
-		name = fs.fe.entry[index].name;		
-	}
-
-	printf("File_Entry index = %d\n", index);
+	while (strcmp(fs.fe[++index].name, file) != 0);
 
 	// 	==> Changer le premier caractère du nom du fichier et sa taille
-	fs.fe.entry[index].name[0] = '0';
-	fs.fe.entry[index].size    =  0 ;
-
-	printf("File : %s (%d bytes)\n", fs.fe.entry[index].name, fs.fe.entry[index].size);
+	fs.fe[index].name[0] = '\0';
+	fs.fe[index].size    =  0 ;
 
 	// Pour chaque bloc du File Entry :
 	// 	Récupérer son index
 	//	Mettre le bit correspondant dans Bitmap à 0
 	int i;
 	for (i = 0; i < 222; i++)
-		if (fs.fe.entry[index].block[i] != 0) { printf("Bitmap[%d] = 0\n", fs.fe.entry[index].block[i]);
-			fs.bitmap[fs.fe.entry[index].block[i]] = 0; }
+		if (fs.fe[index].blocs[i] != 0)
+			fs.bitmap &= 1 << fs.fe[index].blocs[i];
 
 }
