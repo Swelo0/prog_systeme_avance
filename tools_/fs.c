@@ -24,7 +24,6 @@ filesystem sfscreate() {
 			for (j = 0; j < 222; j++)
 				sf.fe[i].blocs[j] = 0;
 		}
-		// Dummy fichier (inexistant)
 		strcpy(sf.fe[3].name, "TestFile\0");
 		sf.fe[3].size = 3;
 		sf.fe[3].blocs[0] = 1;
@@ -51,7 +50,7 @@ void sfslist(filesystem fs) {
 
 
 // Ajout
-void sfsadd(filesystem* fs, char fileName[]) {
+void sfsadd(filesystem *fs, char fileName[]) {
 
 	FILE* fp;
 	block blockTemp;
@@ -134,7 +133,6 @@ void sfsadd(filesystem* fs, char fileName[]) {
 	// 	Trouver bloc libre dans Bitmap (premier bit à 0) ==> Inverser bit
 	//	Sauvegarder l'index du bit dans File Entries
 	//	Sauvegarder le contenu dans File Content au même index
-
 }
 
 
@@ -143,7 +141,9 @@ void sfsdel(filesystem *fs, char file[]) {
 
 	// Parcourir File Entries jusqu'à trouver le fichier correspondant 
 	int index = -1;
-	while (strcmp((*fs).fe[++index].name, file) != 0);
+
+	while ((index < 53) && (strcmp((*fs).fe[++index].name, file) != 0));
+	if (index < 0) return;
 
 	// Changer le premier caractère du nom du fichier et sa taille
 	(*fs).fe[index].name[0] = '\0';
