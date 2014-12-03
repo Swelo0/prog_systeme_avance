@@ -38,7 +38,58 @@ void sfslist() {
 }
 
 // Ajout
-void sfsadd(char file[]) {
+void sfsadd(filesystem fs, char file[]) {
+	FILE* fp;
+	block blockTemp;
+	int   ptByte = 0;
+	int	  fileLen, numEntry, currentBlock = 0, numBlock = 0;
+	
+	fp = fopen(fileName,"r"); // read mode
+	
+	if( fp == NULL )
+	{
+	  perror("Error while opening the file.\n");
+	  //exit(EXIT_FAILURE);
+	}
+	
+	//On trouve une entrée libre.
+	numEntry = 0;
+	while (fs.fe.entry[numEntry].name[0] == '0')
+		numEntry++;
+	
+	//Get file length
+	fseek(fp, 0, SEEK_END);
+	fileLen=ftell(fp); //Nombre de byte dans le fichier
+	fseek(fp, 0, SEEK_SET);
+	
+	int i=0;
+	//On parcours le fichier par block (1024o) 
+	for (i=0;i<(fileLen/block_size);i++)
+	{
+		fread( blockTemp , block_size , 1 , fp );
+		//On maj le bitmap et écris les données, writeBlock(...)
+		while !(fs.bitmap&1<<numBlocks++);
+		//fs.bitmap = fs.bitmap & 1<<numBlocks-1; // maj de bitmap. 
+	}
+	
+	//Quand il reste des données < 1024 on les lit et on rempli le reste
+	//de 0.
+	//A FINIR, on remplie pas le rest
+	while( ( ch = fgetc(fp) ) != EOF )
+	{
+      blockTemp(ptByte++);
+      //ensuite on doit remplir de 0
+	}
+	//On maj le bitmap
+   fclose(fp);
+  // return 0;
+	
+	// Infos du fichier (nom + taille)
+	// Partition fichier
+	// Pour chaque bloc :
+	// 	Trouver bloc libre dans Bitmap (premier bit à 0) ==> Inverser bit
+	//	Sauvegarder l'index du bit dans File Entries
+	//	Sauvegarder le contenu dans File Content au même index
 
 	// Infos du fichier (nom + taille)
 	// Partition fichier
