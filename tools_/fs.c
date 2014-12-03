@@ -24,6 +24,19 @@ filesystem sfscreate() {
 			for (j = 0; j < 222; j++)
 				sf.fe[i].blocs[j] = 0;
 		}
+		// Dummy fichier (inexistant)
+		strcpy(sf.fe[3].name, "TestFile\0");
+		sf.fe[3].size = 3;
+		sf.fe[3].blocs[0] = 1;
+		sf.fe[3].blocs[1] = 2;
+		sf.fe[3].blocs[2] = 3;
+		int64_t one = 1;
+		sf.bitmap |= one << 0; 
+		sf.bitmap |= one << 1; 
+		sf.bitmap |= one << 2; 
+		strcpy(sf.file_content[0], "cahsidjahs\0");
+		strcpy(sf.file_content[1], "sdfhgsdh\0");
+		strcpy(sf.file_content[2], "siduhsdfjns\0");
 
 		return sf;
 
@@ -36,8 +49,10 @@ void sfslist(filesystem fs) {
 
 }
 
+
 // Ajout
-void sfsadd(filesystem fs, char fileName[]) {
+void sfsadd(filesystem* fs, char fileName[]) {
+
 	FILE* fp;
 	block blockTemp;
 	int   ptByte = 0;
@@ -53,18 +68,20 @@ void sfsadd(filesystem fs, char fileName[]) {
 	}
 	
 	//On trouve une entrée libre.
-	numEntry = 0;
-	while (fs.fe[numEntry].name[0] == '\0')
-		numEntry++;
+	numEntry = -1;
+	while ((*fs).fe[++numEntry].name[0] != '\0');
 	
-	strcpy(fs.fe[numEntry].name, fileName);
+	//printf("index : %d \n",numEntry);
 	
+	strcpy((*fs).fe[numEntry].name, fileName);
+	
+	//printf("fichier : %s \n",(*fs).fe[numEntry].name);
 	//Get file length
 	fseek(fp, 0, SEEK_END);
 	fileLen=ftell(fp); //Nombre de byte dans le fichier
 	fseek(fp, 0, SEEK_SET);
 	
-	fs.fe[numEntry].size = fileLen;
+	(*fs).fe[numEntry].size = fileLen;
 	
 	int i=0;
 	//On parcours le fichier par block (1024o) 
@@ -72,12 +89,12 @@ void sfsadd(filesystem fs, char fileName[]) {
 	{
 		fread( blockTemp , block_size , 1 , fp );
 		//On maj le bitmap et écris les données, writeBlock(...)
-		while (fs.bitmap&1<<numBlock++); //on trouve un block libre.
-		fs.bitmap |= 1<<numBlock-1; // maj de bitmap.
-		fs.fe[numEntry].blocs[currentBlock++] = numBlock; // écrit 2
+		while ((*fs).bitmap&1<<numBlock++); //on trouve un block libre.
+		(*fs).bitmap |= 1<<numBlock-1; // maj de bitmap.
+		(*fs).fe[numEntry].blocs[currentBlock++] = numBlock; // écrit 2
 		// si le deuxième block est libre. (donc réellement le bloc[1])
-		//strcpy(fs.file_content[numBlock], blockTemp);
-		memmove(fs.file_content[numBlock], blockTemp, block_size);
+		//strcpy((*fs).file_content[numBlock], blockTemp);
+		memmove((*fs).file_content[numBlock], blockTemp, block_size);
 		
 	}
 	
@@ -93,15 +110,16 @@ void sfsadd(filesystem fs, char fileName[]) {
 	
 	//On maj le bitmap et écris les données, writeBlock(...)
 	numBlock = 0;
-	while (fs.bitmap&1<<numBlock++); //on trouve un block libre.
-	fs.bitmap |= 1<<numBlock-1; // maj de bitmap.
-	fs.fe[numEntry].blocs[currentBlock++] = numBlock; // écrit 2
+	while ((*fs).bitmap&1<<numBlock++); //on trouve un block libre.
+	(*fs).bitmap |= 1<<numBlock-1; // maj de bitmap.
+	(*fs).fe[numEntry].blocs[currentBlock++] = numBlock; // écrit 2
 	// si le deuxième block est libre. (donc réellement le bloc[1])
-	//strcpy(fs.file_content[numBlock], blockTemp);
-	memmove(fs.file_content[numBlock], blockTemp, block_size);
+	//strcpy((*fs).file_content[numBlock], blockTemp);
+	memmove((*fs).file_content[numBlock], blockTemp, block_size);
 	
 	
     fclose(fp);
+    
   // return 0;
 	
 	// Infos du fichier (nom + taille)
@@ -121,30 +139,23 @@ void sfsadd(filesystem fs, char fileName[]) {
 
 
 // Suppression fichier
-void sfsdel(filesystem fs, char file[]) {
+void sfsdel(filesystem *fs, char file[]) {
 
-	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant 
-	char *name;
+	// Parcourir File Entries jusqu'à trouver le fichier correspondant 
 	int index = -1;
-	while (strcmp(name, file) != 0) {
-		index++;
-		name = fs.fe.entry[index].name;		
-	}
+	while (strcmp((*fs).fe[++index].name, file) != 0);
 
-	printf("File_Entry index = %d\n", index);
-
-	// 	==> Changer le premier caractère du nom du fichier et sa taille
-	fs.fe.entry[index].name[0] = '0';
-	fs.fe.entry[index].size    =  0 ;
-
-	printf("File : %s (%d bytes)\n", fs.fe.entry[index].name, fs.fe.entry[index].size);
+	// Changer le premier caractère du nom du fichier et sa taille
+	(*fs).fe[index].name[0] = '\0';
+	(*fs).fe[index].size    =  0 ;
 
 	// Pour chaque bloc du File Entry :
 	// 	Récupérer son index
 	//	Mettre le bit correspondant dans Bitmap à 0
 	int i;
-	for (i = 0; i < 222; i++)
-		if (fs.fe.entry[index].block[i] != 0) { printf("Bitmap[%d] = 0\n", fs.fe.entry[index].block[i]);
-			fs.bitmap[fs.fe.entry[index].block[i]] = 0; }
-
+	for (i = 0; i < 222; i++) 
+		if ((*fs).fe[index].blocs[i] != 0) {
+			(*fs).bitmap ^= 1 << (*fs).fe[index].blocs[i]-1; 
+		}
 }
+
