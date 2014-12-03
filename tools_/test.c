@@ -3,7 +3,7 @@
 
 int main() {
 	filesystem fs = sfscreate();
-	fs.sfsadd("test.txt");
+	sfsadd(fs, "test.txt");
 	return 0;
 
 }

@@ -20,7 +20,7 @@ typedef struct filesystem { //__attribute__(__packed__) {
 		int16 	file_content_size;
 	} sb ;
 
-	block bitmap            ;
+	block bitmap ;
 	struct file_entries {
 		// Chaque entry prend 256 bytes
 		struct entry {
@@ -36,10 +36,8 @@ typedef struct filesystem { //__attribute__(__packed__) {
 } filesystem;
 
 filesystem sfscreate();
-void sfsadd(char file[]);
 void sfslist();
-void sfsdel();
-
-//Ceci est un test
+void sfsadd(filesystem fs, char file[]);
+void sfsdel(filesystem fs, char file[]);
 
 #endif

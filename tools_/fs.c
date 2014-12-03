@@ -90,7 +90,6 @@ void sfsadd(filesystem fs, char file[]) {
 	// 	Trouver bloc libre dans Bitmap (premier bit à 0) ==> Inverser bit
 	//	Sauvegarder l'index du bit dans File Entries
 	//	Sauvegarder le contenu dans File Content au même index
-
 	// Infos du fichier (nom + taille)
 	// Partition fichier
 	// Pour chaque bloc :
@@ -106,7 +105,7 @@ void sfsdel(filesystem fs, char file[]) {
 	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant 
 	char name[] = "";
 	while (strcmp(name, file) != 0) {
-		name = fs.fe.entry[index].name
+		name = fs.fe.entry[index].name;
 	int index = 0; // On va dire
 
 	// 	==> Changer le premier caractère du nom du fichier et sa taille
