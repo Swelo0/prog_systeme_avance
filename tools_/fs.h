@@ -40,4 +40,6 @@ void sfsadd(char file[]);
 void sfslist();
 void sfsdel();
 
+//Ceci est un test
+
 #endif
