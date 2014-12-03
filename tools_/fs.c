@@ -31,7 +31,7 @@ filesystem sfscreate() {
 }
 
 // Liste
-void sfslist() {
+void sfslist(filesystem fs) {
 
 	// Code was here
 
@@ -53,21 +53,27 @@ void sfsadd(filesystem fs, char file[]) {
 void sfsdel(filesystem fs, char file[]) {
 
 	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant 
-	char name[] = "";
+	char *name;
+	int index = -1;
 	while (strcmp(name, file) != 0) {
-		name = fs.fe.entry[index].name;
-	int index = 0; // On va dire
+		index++;
+		name = fs.fe.entry[index].name;		
+	}
+
+	printf("File_Entry index = %d\n", index);
 
 	// 	==> Changer le premier caractère du nom du fichier et sa taille
 	fs.fe.entry[index].name[0] = '0';
 	fs.fe.entry[index].size    =  0 ;
+
+	printf("File : %s (%d bytes)\n", fs.fe.entry[index].name, fs.fe.entry[index].size);
 
 	// Pour chaque bloc du File Entry :
 	// 	Récupérer son index
 	//	Mettre le bit correspondant dans Bitmap à 0
 	int i;
 	for (i = 0; i < 222; i++)
-		if (fs.fe.entry[index].block[i] != 0)
-			bitmap[fs.fe.entry[index].block[i]] = 0;
+		if (fs.fe.entry[index].block[i] != 0) { printf("Bitmap[%d] = 0\n", fs.fe.entry[index].block[i]);
+			fs.bitmap[fs.fe.entry[index].block[i]] = 0; }
 
 }
