@@ -38,7 +38,7 @@ void sfslist() {
 }
 
 // Ajout
-void sfsadd(char file[]) {
+void sfsadd(filesystem fs, char file[]) {
 
 	// Infos du fichier (nom + taille)
 	// Partition fichier
@@ -55,7 +55,7 @@ void sfsdel(filesystem fs, char file[]) {
 	// Parcourir itérativement File Entries jusqu'à trouver le fichier correspondant 
 	char name[] = "";
 	while (strcmp(name, file) != 0) {
-		name = fs.fe.entry[index].name
+		name = fs.fe.entry[index].name;
 	int index = 0; // On va dire
 
 	// 	==> Changer le premier caractère du nom du fichier et sa taille
