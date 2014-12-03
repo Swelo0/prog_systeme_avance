@@ -18,10 +18,18 @@ typedef struct filesystem { //__attribute__(__packed__) {
 		int16 	file_entry_size  ;
 		int16 	file_entry_blocks;
 		int16 	file_content_size;
-	} sb          		;
+	} sb ;
 
 	block bitmap            ;
-	block file_entry[16]    ;
+	struct file_entries {
+		// Chaque entry prend 256 bytes
+		struct entry {
+			char  name[32];
+			int16 size;
+			// 256 - (32 + 2) = 222 bytes pour les index des blocs
+			int16 block[222];
+		} entry[16];
+	} fe ;
 	// La mémoire est de 64Ko max ==> 53 pour le file_content
 	block file_content[53]  ;
 		
