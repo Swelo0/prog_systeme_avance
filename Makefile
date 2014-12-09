@@ -11,15 +11,16 @@ debug :
 	xterm -e qemu-system-i386 -monitor stdio -hda disk.img -s -S & xterm -fn 6x10 -geometry 92x73+0+0 -e 
 	gdb -x debugargs
 
-# n°1 on lit 16425 secteurs de 512 bytes de 0 et on écrit dans disk
+# n°1 on lit 6+128 secteurs de 512 bytes de 0 et on écrit dans disk
 # n°2 on lit boot que l'on écris dans disk au secteur 0
 # n°3 on lit kernel que l'on écris dans disk au secteur 1
 # on va commencer notre SFS au secteur 5
-disk.img:boot kernel 
-	dd if=/dev/zero of=disk.img bs=512 count=6000 
+disk.img:boot kernel fs
+	dd if=/dev/zero of=disk.img bs=512 count=134 
 	dd conv=notrunc seek=0 if=boot_/boot of=disk.img 
 	dd conv=notrunc seek=1 if=kernel_/kernel.img of=disk.img
-	dd conv=notrunc seek=5 if=tools_/test.txt of=disk.img
+	dd conv=notrunc seek=5 if=tools_/fs.img of=disk.img
+	dd conv=notrunc seek=10 if=tools_/test.txt of=disk.img
 	@echo "\033[32;1m[>>] [SYSTEME ] Creation de l'image disque bootable "\""disk.img"\""\033[0m"
 	
 boot: boot_/boot.asm
@@ -38,6 +39,12 @@ kernel:
 	as86 -o kernel_/disk_asm.o kernel_/disk_asm.s
 	as86 -o kernel_/init_syscall.o kernel_/init_syscall.s
 	ld86 -M -m -d -s -o kernel_/kernel.img kernel_/main.o kernel_/kernel.o kernel_/syscall_handler.o kernel_/util_asm.o kernel_/init_syscall.o kernel_/disk.o kernel_/disk_asm.o kernel_/syscall.o
+
+fs: 
+	bcc -W -V -I -ansi -c tools_/fs.c
+	ld86 -M -m -d -s -o tools_/fs.img tools_/fs.o
+	
+
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $(SRC)   

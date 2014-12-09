@@ -8,15 +8,14 @@ Kernel :
 	
 Système de fichier :
 	(un secteur = 512o)
-	(un bloque = 1024o = 2 secteurs)
+	(un bloque = 1024o = 2 secteurs = 8192 bits)
 	(on a disposition max 64ko=65536o, ce qui fait 128 secteurs -> 64 bloque)
 
-	un blocks = 8192 bits (1024 Bytes)
 	bitmap -> donne l'état de chaque blocks
 
 	Superblock = 1 block
 	Bitmap = 1 block (peut référencer 8192 block)
-	File Entries = 16 block()
+	File Entries = 16 block
 	File Content = 46 block
 	
 	= 128 sect = 64 blocks (1+1+16+46).

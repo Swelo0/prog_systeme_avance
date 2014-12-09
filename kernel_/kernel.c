@@ -13,7 +13,7 @@ void kernel() {
 	interrupt(0x80, 1, str, 0, 0); // print_string
 	interrupt(0x80, 1, "\r\n", 0, 0); // print_string
 	
-	interrupt(0x80, 3, 5, sect, 0); // read sector
+	interrupt(0x80, 3, 10, sect, 0); // read sector
 	interrupt(0x80, 1, "\n", 0, 0); // print_string
 	interrupt(0x80, 1, "Voici ce qui a ete lu dans le secteur numero 5: ", 0, 0); // print_string
 	interrupt(0x80, 1, "\r\n", 0, 0); // print_string
@@ -22,7 +22,7 @@ void kernel() {
 	
 	interrupt(0x80, 1, "Veuillez ecrire qqch qui sera ensuite ecrit dans le sixieme secteur du disque: ", 0, 0); // print_string
 	interrupt(0x80, 2, sect, 0, 0); // read_string
-	interrupt(0x80, 4, 5, sect, 0); // write_sector
+	interrupt(0x80, 4, 10, sect, 0); // write_sector
 	interrupt(0x80, 1, "\r\n", 0, 0); // print_string
 	interrupt(0x80, 1, sect, 0, 0); // print_string
 	interrupt(0x80, 1, "Le secteur 6 a bien ete modifie. Pour controler, c'est l\'adresse 0xA00", 0, 0); // print_string, 0, 0); // print_string

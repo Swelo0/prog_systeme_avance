@@ -74,9 +74,9 @@ void sfslist(filesystem *fs) {
 	int index = 0;
 	printf("Voici la liste des fichiers:\n");
 	while ((index < 16)){
-		while ((*fs).fe[index++].name[0] == '\0');
-		if((*fs).fe[index-1].size != 0)
-			printf("- %s, index : %d \n",(*fs).fe[index-1].name,index-1);
+		if ((*fs).fe[index].name[0] != '\0')
+			printf("- %s\n", (*fs).fe[index].name);
+		index++;
 	}
 }
 

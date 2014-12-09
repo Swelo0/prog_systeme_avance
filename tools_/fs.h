@@ -3,17 +3,17 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
+//#include <stdint.h>
 
 #define block_size		1024
 
-typedef int16_t int16;
-typedef int64_t int64;
-typedef char    block[1024];
+typedef short   int16; //short est tjr à 16bits
+typedef long    int64;
+typedef char    block[1024]; // block = char[1024]. La syntax peut
+							 // perturbé.
 
 // attribute(packed) pour empêcher le compilateur de faire du panning
 typedef struct filesystem { //__attribute__(__packed__) {
-
 	struct superblock {
 		char    signature[8]	 ; 
 		int16 	sectors_per_block;
@@ -37,7 +37,7 @@ typedef struct filesystem { //__attribute__(__packed__) {
 } filesystem;
 
 filesystem sfscreate();
-//void sfslist(filesystem *fs);
+void sfslist(filesystem *fs);
 void sfsadd (filesystem *fs, char file[]);
 void sfsdel (filesystem *fs, char file[]);
 
