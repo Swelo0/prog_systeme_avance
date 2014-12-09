@@ -38,7 +38,7 @@ filesystem sfscreate() {
 		sf.sb.file_content_size  = file_contents   ;
 		
 		// Init du bitmap à 0;
-		sf.bitmap = 0;
+		memset(sf.bitmap,'\0',block_size);
 
 		// Init du file entries à 0;
 		int i,j;
@@ -72,6 +72,7 @@ void sfsadd(filesystem *fs, char fileName[]) {
 	FILE* fp;
 	block blockTemp;
 	int   ptByte = 0;
+	int64*  ptBitmap =(int64*)(&(*fs).bitmap);
 	char  ch;
 	int	  fileLen, numEntry, currentBlock = 0, numBlock = 0;
 	
@@ -99,9 +100,9 @@ void sfsadd(filesystem *fs, char fileName[]) {
 		fread( blockTemp , block_size , 1 , fp );
 		// On met a jour le Bitmap et écrit les données, writeBlock(...)
 		// On trouve un block libre
-		while ((*fs).bitmap&1<<numBlock++); 
+		while ((*ptBitmap)&1<<numBlock++); 
 		// Mise à jour de Bitmap
-		(*fs).bitmap |= 1<<numBlock-1; 
+		(*ptBitmap) |= 1<<numBlock-1; 
 		// Ecrit 2
 		(*fs).fe[numEntry].blocs[currentBlock++] = numBlock; 
 		// Si le deuxième block est libre (donc réellement le bloc[1])
@@ -115,9 +116,9 @@ void sfsadd(filesystem *fs, char fileName[]) {
 	// On met a jour le Bitmap et écrit les données, writeBlock(...)
 	numBlock = 0;
 	// On trouve un block libre
-	while ((*fs).bitmap&1<<numBlock++); 
+	while ((*ptBitmap)&1<<numBlock++); 
 	// Mise à jour de bitmap
-	(*fs).bitmap |= 1<<numBlock-1; 
+	(*ptBitmap) |= 1<<numBlock-1; 
 	// Ecrit 2
 	(*fs).fe[numEntry].blocs[currentBlock++] = numBlock; 
 	// Si le deuxième block est libre (donc réellement le bloc[1])
@@ -145,8 +146,9 @@ void sfsdel(filesystem *fs, char file[]) {
 	// 	Récupérer son index
 	//	Mettre le bit correspondant dans Bitmap à 0
 	int i;
+	int64*  ptBitmap =(int64*)(&(*fs).bitmap);
 	for (i = 0; i < max_blocks; i++) 
 		if ((*fs).fe[index].blocs[i] != 0) {
-			(*fs).bitmap ^= 1 << (*fs).fe[index].blocs[i]-1; 
+			*ptBitmap ^= 1 << (*fs).fe[index].blocs[i]-1; 
 		}
 }

@@ -22,7 +22,9 @@ Système de fichier :
 	
 	C'est la taille idéal pour notre système de fichier
 	
+	(début de la struct dans l'image : 0x1cb7)
 	
+	Après SFSv0100, il faut 2 blocks (et donc 4 secteurs pour tomber sur les fichiers (file entry))
 	
 A FAIRE :
 

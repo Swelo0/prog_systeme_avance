@@ -19,7 +19,7 @@ typedef char    block[1024]; // block = char[1024]. La syntax peut
 							 // perturbé.
 
 // attribute(packed) pour empêcher le compilateur de faire du panning
-typedef struct filesystem { //__attribute__(__packed__) {
+typedef struct filesystem {
 	struct superblock {
 
 		char  signature[signature_size]; 
@@ -31,7 +31,7 @@ typedef struct filesystem { //__attribute__(__packed__) {
 
 	} sb ;
 
-	int64 bitmap ;
+	block bitmap ;
 
 	struct file_entries {
 
@@ -43,7 +43,7 @@ typedef struct filesystem { //__attribute__(__packed__) {
 
 	block file_content[max_blocks]  ;
 		
-} filesystem;
+} filesystem __attribute__((packed));
 
 filesystem sfscreate();
 void sfslist(filesystem *fs);

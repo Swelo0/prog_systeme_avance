@@ -26,5 +26,10 @@ void kernel() {
 	interrupt(0x80, 1, "\r\n", 0, 0); // print_string
 	interrupt(0x80, 1, sect, 0, 0); // print_string
 	interrupt(0x80, 1, "Le secteur 6 a bien ete modifie. Pour controler, c'est l\'adresse 0xA00", 0, 0); // print_string, 0, 0); // print_string
+
+	interrupt(0x80, 1, "\r\n", 0, 0); // print_string	
+	interrupt(0x80, 1, "test du get_stat()", 0, 0);
+	interrupt(0x80, 5, "test.txt", "", 0); // get_stat() du fichier "test.txt"
+	
 	while(1);
 }
