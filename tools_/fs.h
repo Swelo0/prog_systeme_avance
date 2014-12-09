@@ -37,7 +37,7 @@ typedef struct filesystem { //__attribute__(__packed__) {
 } filesystem;
 
 filesystem sfscreate();
-void sfslist(filesystem *fs);
+//void sfslist(filesystem *fs);
 void sfsadd (filesystem *fs, char file[]);
 void sfsdel (filesystem *fs, char file[]);
 

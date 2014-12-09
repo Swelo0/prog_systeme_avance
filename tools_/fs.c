@@ -92,7 +92,7 @@ void sfsadd(filesystem *fs, char fileName[]) {
 	
 	fp = fopen(fileName,"r"); // read mode
 	
-	if( fp == NULL )
+	if( fp == NULL ) {
 	  perror("Error while opening the file.\n");
 	  //return (void)-1;
 	} 
