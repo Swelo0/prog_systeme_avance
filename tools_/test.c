@@ -4,7 +4,6 @@
 int main() {
 
 	filesystem fs = sfscreate();
-	printf("binarymap : %d \n",fs.bitmap);
 	sfsadd(&fs, "test.txt"); printf("binarymap : %d \n",fs.bitmap);
 	sfsadd(&fs, "test.txt"); printf("binarymap : %d \n",fs.bitmap);
 	///////////////////
@@ -20,12 +19,9 @@ int main() {
 	while (fs.fe[numEntry++].name[0] == '\0');
 	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1);
 	
-	sfsdel(&fs, "TestFile");
-	printf("binarymap : %d \n",fs.bitmap);
+	//sfsdel(&fs, "test.txt");
 	
-	numEntry = 0;
-	while (fs.fe[numEntry++].name[0] == '\0');
-	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1);	
+	sfslist(&fs);	
 
 	return 0;
 }
