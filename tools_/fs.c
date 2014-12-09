@@ -76,7 +76,7 @@ void sfslist(filesystem *fs) {
 	while ((index < 16)){
 		while ((*fs).fe[index++].name[0] == '\0');
 		if((*fs).fe[index-1].size != 0)
-			printf("- %s\n",(*fs).fe[index-1].name);
+			printf("- %s, index : %d \n",(*fs).fe[index-1].name,index-1);
 	}
 }
 
@@ -118,18 +118,14 @@ void sfsadd(filesystem *fs, char fileName[]) {
 		(*fs).bitmap |= 1<<numBlock-1; // maj de bitmap.
 		(*fs).fe[numEntry].blocs[currentBlock++] = numBlock; // écrit 2
 		// si le deuxième block est libre. (donc réellement le bloc[1])
-		//strcpy((*fs).file_content[numBlock], blockTemp);
 		memmove((*fs).file_content[numBlock], blockTemp, block_size);
 	}
 	
-	//Quand il reste des données < 1024 on les lit et on rempli le reste
-	//de 0.
-	//A FINIR, on remplie pas le rest
+	//Quand il reste moins de 1024o de données à écrire. 
 	while( ( ch = fgetc(fp) ) != EOF ) {
       blockTemp[ptByte++] = ch;
-      //ensuite on doit remplir de 0
 	}
-	blockTemp[ptByte] = '\0'; //A enlever
+	blockTemp[ptByte] = '\0'; //fin du fichier
 	
 	//On maj le bitmap et écris les données, writeBlock(...)
 	numBlock = 0;
