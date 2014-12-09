@@ -24,6 +24,8 @@ filesystem sfscreate() {
 			for (j = 0; j < 222; j++)
 				sf.fe[i].blocs[j] = 0;
 		}
+		//Fichier expérimental de test
+		/*
 		strcpy(sf.fe[3].name, "TestFile\0");
 		sf.fe[3].size = 3;
 		sf.fe[3].blocs[0] = 1;
@@ -35,17 +37,22 @@ filesystem sfscreate() {
 		sf.bitmap |= one << 2; 
 		strcpy(sf.file_content[0], "cahsidjahs\0");
 		strcpy(sf.file_content[1], "sdfhgsdh\0");
-		strcpy(sf.file_content[2], "siduhsdfjns\0");
+		strcpy(sf.file_content[2], "siduhsdfjns\0");*/
 
 		return sf;
 
 }
 
 // Liste
-void sfslist(filesystem fs) {
-
-	// Code was here
-
+void sfslist(filesystem *fs) {
+	//On va parcourir le Files Entries pour sortir tous les fichiers.
+	int index = 0;
+	printf("Voici la liste des fichiers:\n");
+	while ((index < 16)){
+		while ((*fs).fe[index++].name[0] == '\0');
+		if((*fs).fe[index-1].size != 0)
+			printf("- %s\n",(*fs).fe[index-1].name);
+	}
 }
 
 
@@ -61,7 +68,6 @@ void sfsadd(filesystem *fs, char fileName[]) {
 	fp = fopen(fileName,"r"); // read mode
 	
 	if( fp == NULL )
-	{
 	  perror("Error while opening the file.\n");
 	  //exit(EXIT_FAILURE);
 	}
