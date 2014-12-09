@@ -1,14 +1,8 @@
 // kernel.c
+#include "syscall.c" 
+
 int times2(int n);
 int interrupt(int number, int ax, int bx, int cx, int dx, int di);
-
-void print_char(char c);
-void print_string(char *str);
-char read_char();
-void read_string(char *buf);
-
-typedef unsigned char uchar;
-typedef unsigned int uint;
 
 void kernel() {
 	char str[256], sect[512];
@@ -33,34 +27,4 @@ void kernel() {
 	interrupt(0x80, 1, sect, 0, 0); // print_string
 	interrupt(0x80, 1, "Le secteur 6 a bien ete modifie. Pour controler, c'est l\'adresse 0xA00", 0, 0); // print_string, 0, 0); // print_string
 	while(1);
-}
-
-void print_char(char c){
-	char al = c;
-	char ah = 0xE;
-	int ax = ah*256+al;
-	interrupt(0x10,ax,0,0,0);
-}
-
-char read_char(){
-	int ax,al;
-	ax = interrupt(0x16,0,0,0,0);
-	al = ax & 0xff;
-	return al;
-}
-
-void print_string(char *str){
-	int i = 0;
-	do{
-		print_char(str[i]);
-		i++;
-	}while(str[i] != '\0');
-}
-
-void read_string(char* buf){
-	int i = 0;
-	do{
-		buf[i] = read_char();
-	}while(buf[i++] != 0xD);
-	buf[i]='\0';
 }
