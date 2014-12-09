@@ -19,9 +19,9 @@ disk.img:boot kernel fs
 	dd if=/dev/zero of=disk.img bs=512 count=134 
 	dd conv=notrunc seek=0 if=boot_/boot of=disk.img 
 	dd conv=notrunc seek=1 if=kernel_/kernel.img of=disk.img
-	dd conv=notrunc seek=5 if=tools_/fs.img of=disk.img
-	dd conv=notrunc seek=10 if=tools_/test.txt of=disk.img
-	@echo "\033[32;1m[>>] [SYSTEME ] Creation de l'image disque bootable "\""disk.img"\""\033[0m"
+	dd conv=notrunc seek=5 if=tools_/test.txt of=disk.img
+	dd conv=notrunc seek=10 if=tools_/fs.o of=disk.img
+	@echo "\033[32;1m[>>] [SYSTEME] Creation de l'image disque bootable "\""disk.img"\""\033[0m"
 	
 boot: boot_/boot.asm
 	nasm boot_/boot.asm
@@ -40,9 +40,9 @@ kernel:
 	as86 -o kernel_/init_syscall.o kernel_/init_syscall.s
 	ld86 -M -m -d -s -o kernel_/kernel.img kernel_/main.o kernel_/kernel.o kernel_/syscall_handler.o kernel_/util_asm.o kernel_/init_syscall.o kernel_/disk.o kernel_/disk_asm.o kernel_/syscall.o
 
-fs: 
-	bcc -W -V -I -ansi -c tools_/fs.c
-	ld86 -M -m -d -s -o tools_/fs.img tools_/fs.o
+
+fs : tools_/fs.c tools_/fs.h
+	gcc tools_/fs.c tools_/fs.h tools_/test.c -o tools_/fs.o
 	
 
 
