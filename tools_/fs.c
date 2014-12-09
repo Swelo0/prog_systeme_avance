@@ -1,3 +1,28 @@
+/*----------------------------------------------------------------------
+ * 					Système de fichier (version linux)
+ * 	Fonctionnalité :
+ * 		-sfscreate: Initialise notre système de fichier.
+ * 		-sfsadd   : Permet d'ajouter un fichier au système,
+ * 					on chercher une entrée libre dans le file entry pour
+ * 					notre fichier et on l'écris en blocks dans le file 
+ * 					content, le bitmap est mis à jour en parrallèle.
+ * 
+ * 		-sfsdel   : Met simplement à 0 le premier caractère du file 
+ * 					entry de notre fichier ainsi que les bitmap qui le
+ * 					concerne
+ * 
+ *  Remarques :  /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ 
+ * 
+ * 				Le premier blocks du content (qui à la valeur 0 en c)
+ * 				est considéré comme le 1 ici. Ainsi si dans notre file
+ * 				entry, notre fichier est dans le block [1], en réalité
+ * 				c'est le blocks [0] en mémoire.
+ * 				exemple :
+ * 						fileEntry[1].blocs[1] == fileContent[0]
+ * 
+ * -------------------------------------------------------------------*/
+
+
 #include "fs.h"
 
 // Création
@@ -69,18 +94,14 @@ void sfsadd(filesystem *fs, char fileName[]) {
 	
 	if( fp == NULL )
 	  perror("Error while opening the file.\n");
-	  //exit(EXIT_FAILURE);
-	}
+	  //return (void)-1;
+	} 
 	
 	//On trouve une entrée libre.
 	numEntry = -1;
 	while ((*fs).fe[++numEntry].name[0] != '\0');
-	
-	//printf("index : %d \n",numEntry);
-	
 	strcpy((*fs).fe[numEntry].name, fileName);
 	
-	//printf("fichier : %s \n",(*fs).fe[numEntry].name);
 	//Get file length
 	fseek(fp, 0, SEEK_END);
 	fileLen=ftell(fp); //Nombre de byte dans le fichier
@@ -90,8 +111,7 @@ void sfsadd(filesystem *fs, char fileName[]) {
 	
 	int i=0;
 	//On parcours le fichier par block (1024o) 
-	for (i=0;i<(fileLen/block_size);i++)
-	{
+	for (i=0;i<(fileLen/block_size);i++) {
 		fread( blockTemp , block_size , 1 , fp );
 		//On maj le bitmap et écris les données, writeBlock(...)
 		while ((*fs).bitmap&1<<numBlock++); //on trouve un block libre.
@@ -100,14 +120,12 @@ void sfsadd(filesystem *fs, char fileName[]) {
 		// si le deuxième block est libre. (donc réellement le bloc[1])
 		//strcpy((*fs).file_content[numBlock], blockTemp);
 		memmove((*fs).file_content[numBlock], blockTemp, block_size);
-		
 	}
 	
 	//Quand il reste des données < 1024 on les lit et on rempli le reste
 	//de 0.
 	//A FINIR, on remplie pas le rest
-	while( ( ch = fgetc(fp) ) != EOF )
-	{
+	while( ( ch = fgetc(fp) ) != EOF ) {
       blockTemp[ptByte++] = ch;
       //ensuite on doit remplir de 0
 	}
