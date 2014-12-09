@@ -1,3 +1,6 @@
+#ifndef H_FS_
+#define H_FS_
+
 #include <stdio.h>
 #include <string.h>
 //#include <stdint.h>
@@ -46,3 +49,5 @@ filesystem sfscreate();
 void sfslist(filesystem *fs);
 void sfsadd (filesystem *fs, char file[]);
 void sfsdel (filesystem *fs, char file[]);
+
+#endif
