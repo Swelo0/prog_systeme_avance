@@ -42,8 +42,8 @@ kernel:
 	ld86 -M -m -d -s -o kernel_/kernel.img kernel_/main.o kernel_/kernel.o kernel_/syscall_handler.o kernel_/util_asm.o kernel_/init_syscall.o kernel_/disk.o kernel_/disk_asm.o kernel_/syscall.o kernel_/fs.o
 
 
-fs : tools_/fs.c tools_/fs.h
-	gcc tools_/fs.c tools_/fs.h tools_/test.c -o tools_/fs.o
+fs :
+	make -C tools_/
 	
 
 
