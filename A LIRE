@@ -1,0 +1,32 @@
+
+
+
+Kernel :
+	1. init_syscall va écraser la fonction écrite en mémoire à l'adresse 0x80 de la table des interruption
+	2. syscall_handler est la fonction qui sera appeller par 0x80. on lui passera la sous routine que l'on veut
+	3. Les sous routine sont print_char etc.
+	
+Système de fichier :
+	(un secteur = 512o)
+	(un bloque = 1024o = 2 secteurs)
+	(on a disposition max 64ko=65536o, ce qui fait 128 secteurs -> 64 bloque)
+
+	un blocks = 8192 bits (1024 Bytes)
+	bitmap -> donne l'état de chaque blocks
+
+	Superblock = 1 block
+	Bitmap = 1 block (peut référencer 8192 block)
+	File Entries = 16 block()
+	File Content = 46 block
+	
+	= 128 sect = 64 blocks (1+1+16+46).
+	
+	C'est la taille idéal pour notre système de fichier
+	
+	
+	
+A FAIRE :
+
+	Ajouter syscall.c dans le makefile, et mettre un header.
+	Les importer dans le kernel pour les tester.
+	Changer dans le kernel par les enum des syscall
