@@ -13,8 +13,10 @@ int main() {
 	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1);
 	
 	while (fs.fe[numEntry++].name[0] == '\0');
-	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1);
+	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1)	;
 	
+	
+	// Dire à Sylvain de faire attention au numEntry -1.
 	while (fs.fe[numEntry++].name[0] == '\0');
 	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1);
 	
