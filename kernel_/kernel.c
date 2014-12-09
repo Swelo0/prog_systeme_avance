@@ -1,5 +1,5 @@
 // kernel.c
-#include "syscall.c" 
+//#include "syscall.c" 
 
 int times2(int n);
 int interrupt(int number, int ax, int bx, int cx, int dx, int di);
