@@ -1,11 +1,24 @@
 // kernel.c
-//#include "syscall.c" 
+//#include "syscall.c"
+#define filename_size 32
+
+typedef signed int int16;
 
 int times2(int n);
 int interrupt(int number, int ax, int bx, int cx, int dx, int di);
 
+typedef struct stat_t {
+	char  name[filename_size];
+	int nbBlocks;
+	int16 size;
+} stat_t;
+
+stat_t stat;
+
+
 void kernel() {
-	char str[256], sect[512];
+	char str[256], sect[512], filename[32];
+	
 	init_syscalls();
 	interrupt(0x80, 1, "Veuillez ecrire qqch qui sera ensuite affiche: ", 0, 0); // print_string
 	interrupt(0x80, 2, str, 0, 0); // read_string
@@ -28,8 +41,13 @@ void kernel() {
 	interrupt(0x80, 1, "Le secteur 6 a bien ete modifie. Pour controler, c'est l\'adresse 0xA00", 0, 0); // print_string, 0, 0); // print_string
 
 	interrupt(0x80, 1, "\r\n", 0, 0); // print_string	
-	interrupt(0x80, 1, "test du get_stat()", 0, 0);
-	interrupt(0x80, 5, "test.txt", "", 0); // get_stat() du fichier "test.txt"
+	interrupt(0x80, 1, "Veuillez saisir un nom de fichier afin de savoir sa taille:\r\n", 0, 0); // print_string
+	interrupt(0x80, 2, filename, 0, 0); // read_string
+	interrupt(0x80, 1, "\r\nVous avez ecrit: ", 0, 0); // print_string
+	interrupt(0x80, 1, filename, 0, 0); // print_string
+	interrupt(0x80, 1, "\r\n", 0, 0); // print_string	
+	
+	interrupt(0x80, 5, filename, &stat, 0); // get_stat() du fichier "test.txt"
 	
 	while(1);
 }

@@ -29,9 +29,9 @@ typedef struct filesystem {
 		int16 file_entry_blocks	       ;
 		int16 file_content_size	       ;
 
-	} sb ;
+	} sb __attribute__((packed));
 
-	block bitmap ;
+	block bitmap __attribute__((packed));
 
 	struct file_entries {
 
@@ -39,13 +39,12 @@ typedef struct filesystem {
 		int16 size;
 		int16 blocs[max_blocks];
 
-	} fe[file_entries_num];
+	} fe[file_entries_num] __attribute__((packed));
 
-	block file_content[max_blocks]  ;
+	block file_content[max_blocks]  __attribute__((packed))
 		
 } filesystem __attribute__((packed));
 
-filesystem sfscreate();
 void sfslist(filesystem *fs);
 void sfsadd (filesystem *fs, char file[]);
 void sfsdel (filesystem *fs, char file[]);
