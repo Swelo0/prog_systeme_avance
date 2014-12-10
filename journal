@@ -1,11 +1,11 @@
 ----------
- 12/11/10
+ 12/11/14
 ----------
 - Finition read_sector/write_sector
 - Création système fichier simple
 
 ----------
- 19/11/10
+ 19/11/14
 ----------
 Fonctionnement sfsadd/del/list
 
@@ -37,6 +37,26 @@ Parcours itératif :
       current_index = 0 (peut-être faire une fonction x.resetIndex() pour être plus flexible) 
      
 ----------
- 26/11/10
+ 26/11/14
 ----------
  - Débogage construction structure "filesystem"
+ - Fonctions sfsadd / sfsdel
+
+----------
+ 03/12/14
+----------
+ - Tests et débogage sfsadd/sfsdel
+ - Fonction sfslist
+ - Ajout de constantes (#define)
+
+----------
+ 09/12/14
+----------
+ - Modification Makefile pour inclure l'image fs.img
+ - Tests et débogage sfslist
+
+----------
+ 10/11/14
+----------
+ - Fonctions iterator / getstats (kernel_/)
+	==> Erreur : Need scalar (index = (first_fe_sect) + (position / 2);)
