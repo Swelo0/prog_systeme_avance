@@ -77,7 +77,7 @@ int iterator(char *filename, int* sector, struct stat_t *stat){
 	for(i = ((int)sectorPos*256+32); i < ((int)sectorPos*256+34); i++)
 		(*stat).size += sectBuf[i];
 	for(i = ((int)sectorPos*256+34); i < ((int)sectorPos*256+256); i+2){
-		if(sectBuf[i] == '0'){
+		if(sectBuf[i] != '0'){
 			(*stat).nbBlocks += 1;
 		}else
 			break;
