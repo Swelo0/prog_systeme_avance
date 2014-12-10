@@ -7,7 +7,7 @@ int get_stat(char *filename, struct stat_t *stat) {
 	position = 0;
 
 	// Itérer tant qu'on a pas le bon fichier
-	while ((((*stat).name) != filename) && (ret == 0)){
+	while ((((*stat).name) != filename) && (ret == 0)){ //BESOIN D'UNE FONCTION DE COMP. STRING ICI!!
 		ret = iterator(filename, &position);
 		// Gérer les erreurs
 		if (ret == -1) { 
