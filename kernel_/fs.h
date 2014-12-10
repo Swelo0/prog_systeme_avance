@@ -11,8 +11,10 @@ typedef struct stat_t {
 	int16  size;
 } stat_t;
 
-char sect[512];
+char sectBuf[512];
 
+int* sectorPos;
+int* sector;
 int* position;
 int  currentPosition;
 int  currentSector;

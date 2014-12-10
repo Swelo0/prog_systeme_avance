@@ -4,9 +4,7 @@
 filesystem sf;
 
 // Création: crée un filesystemName.img
-int sfscreate(char *filesystemName) {
-		FILE * file= fopen(filesystemName, "wb");
-		
+int sfscreate() {
 		// Superblock
 		strcpy(sf.sb.signature,    "SFSv0100")     ;
 		sf.sb.sectors_per_block  = 2               ;
@@ -26,34 +24,56 @@ int sfscreate(char *filesystemName) {
 			for (j = 0; j < max_blocks; j++)
 				sf.fe[i].blocs[j] = 0;
 		}
-		
-		//Ecriture de la structure initiale dans fs.img
-		if (file != NULL) {
-			fwrite(&sf, sizeof(filesystem), 1, file);
-			fclose(file);
-		}
 		return 0;
 }
 
-int sfsAddToImg(char *filesystemName, char *filename){
-	FILE * file= fopen(filesystemName, "wb");
+int sfsAddToImg(char *filename){
 	
 	sfsadd(&sf, filename);
-	
-	//Ecriture de la structure initiale dans fs.img
-	if (file != NULL) {
-		fwrite(&sf, sizeof(filesystem), 1, file);
-		fclose(file);
-	}
 	
 	return 0;
 }
 
 int main() {
-	sfscreate("fs.img");
-	sfsAddToImg("fs.img", "test.txt");
-	sfsAddToImg("fs.img", "bonjour.txt");
-	sfsAddToImg("fs.img", "message.txt");
+	FILE * file= fopen("fs.img", "wb");
+	int i;
+	char* tempChar;
+	sfscreate();
+	sfsAddToImg("test.txt");
+	sfsAddToImg("bonjour.txt");
+	sfsAddToImg("message.txt");
+	
+	//Ecriture de la structure initiale dans fs.img
+	if (file != NULL) {
+		fwrite(&sf.sb, sizeof(struct superblock), 1, file);
+		fclose(file);
+		
+		tempChar = malloc(1024 - sizeof(struct superblock));
+		
+		for(i = 0; i < (1024 - sizeof(struct superblock)); i++){
+			tempChar[i] = '\0';
+		}
+		
+		file = fopen("fs.img", "a");
+		fwrite(tempChar, 1024 - sizeof(struct superblock), 1, file);
+		fclose(file);
+				
+		file= fopen("fs.img", "a");
+		fwrite(&sf.bitmap, block_size, 1, file);
+		fclose(file);
+		
+		file= fopen("fs.img", "a");
+		fwrite(&sf.fe, sizeof(struct file_entries)*file_entries_num, 1, file);
+		fclose(file);
+		
+		file= fopen("fs.img", "a");
+		fwrite(&sf.fe, sizeof(struct file_entries)*file_entries_num, 1, file);
+		fclose(file);
+		
+		file= fopen("fs.img", "a");
+		fwrite(&sf.file_content, sizeof(block)*max_blocks, 1, file);
+		fclose(file);
+	}
 
 	return 0;
 }

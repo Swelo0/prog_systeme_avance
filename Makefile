@@ -19,8 +19,7 @@ disk.img:boot kernel fs
 	dd if=/dev/zero of=disk.img bs=512 count=134 
 	dd conv=notrunc seek=0 if=boot_/boot of=disk.img 
 	dd conv=notrunc seek=1 if=kernel_/kernel.img of=disk.img
-	dd conv=notrunc seek=5 if=tools_/test.txt of=disk.img
-	#dd conv=notrunc seek=10 if=tools_/fs.img of=disk.img
+	dd conv=notrunc seek=10 if=fs.img of=disk.img
 	@echo "\033[32;1m[>>] [SYSTEME] Creation de l'image disque bootable "\""disk.img"\""\033[0m"
 	
 boot: boot_/boot.asm

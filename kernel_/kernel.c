@@ -15,9 +15,10 @@ typedef struct stat_t {
 
 stat_t stat;
 
-
 void kernel() {
 	char str[256], sect[512], filename[32];
+	stat.name[0] = '\0';
+	stat.size = 0;
 	
 	init_syscalls();
 	interrupt(0x80, 1, "Veuillez ecrire qqch qui sera ensuite affiche: ", 0, 0); // print_string
