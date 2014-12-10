@@ -1,10 +1,11 @@
 #include "fs.h"
 #include <stdio.h>
 
-// Création: crée un filesystemName.img
-filesystem sfscreate(char *filesystemName) {
+filesystem sf;
 
-		filesystem sf;
+// Création: crée un filesystemName.img
+int sfscreate(char *filesystemName) {
+		FILE * file= fopen(filesystemName, "wb");
 		
 		// Superblock
 		strcpy(sf.sb.signature,    "SFSv0100")     ;
@@ -25,36 +26,34 @@ filesystem sfscreate(char *filesystemName) {
 			for (j = 0; j < max_blocks; j++)
 				sf.fe[i].blocs[j] = 0;
 		}
-
-		return sf;
+		
+		//Ecriture de la structure initiale dans fs.img
+		if (file != NULL) {
+			fwrite(&sf, sizeof(filesystem), 1, file);
+			fclose(file);
+		}
+		return 0;
 }
 
-filesystem sfsAddToImg(){
+int sfsAddToImg(char *filesystemName, char *filename){
+	FILE * file= fopen(filesystemName, "wb");
 	
-}
-
-int main() {
-
-	filesystem fs = sfscreate("fs.img");
-	//write(&fs);
-	//sfsadd(&fs, "test.txt"); printf("binarymap : %d \n",(int64)fs.bitmap[0]);
-	//sfsadd(&fs, "test.txt"); printf("binarymap : %d \n",(int64)fs.bitmap[0]);
+	sfsadd(&sf, filename);
 	
-	//sfsdel(&fs, "test.txt");
+	//Ecriture de la structure initiale dans fs.img
+	if (file != NULL) {
+		fwrite(&sf, sizeof(filesystem), 1, file);
+		fclose(file);
+	}
 	
-	//sfslist(&fs);
-	
-	printf("binarymap : %d \n",(int64)fs.bitmap[0]);
-
 	return 0;
 }
 
-	///////////////////
-	/*
-	int numEntry = 0;
-	while (fs.fe[numEntry++].name[0] == '\0');
-	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1);
-	
-	while (fs.fe[numEntry++].name[0] == '\0');
-	printf("fichier : %s -> %d \n",fs.fe[numEntry-1].name, numEntry-1)	;
-	*/
+int main() {
+	sfscreate("fs.img");
+	sfsAddToImg("fs.img", "test.txt");
+	sfsAddToImg("fs.img", "bonjour.txt");
+	sfsAddToImg("fs.img", "message.txt");
+
+	return 0;
+}

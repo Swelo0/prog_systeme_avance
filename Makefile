@@ -43,11 +43,10 @@ kernel:
 
 
 fs :
+	dd if=/dev/zero of=tools_/fs.img bs=512 count=500 
 	make -C tools_/
-	#dd conv=notrunc seek=10 if=tools_/sfs of=fs.img
+	./tools_/sfs
 	
-
-
 %.o: %.c
 	$(CC) $(FLAGS) -c $(SRC)   
 

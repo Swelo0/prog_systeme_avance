@@ -31,7 +31,7 @@ typedef struct filesystem {
 
 	} sb __attribute__((packed));
 
-	block bitmap __attribute__((packed));
+	block bitmap;
 
 	struct file_entries {
 
@@ -41,9 +41,9 @@ typedef struct filesystem {
 
 	} fe[file_entries_num] __attribute__((packed));
 
-	block file_content[max_blocks]  __attribute__((packed))
+	block file_content[max_blocks];
 		
-} filesystem __attribute__((packed));
+}filesystem;
 
 void sfslist(filesystem *fs);
 void sfsadd (filesystem *fs, char file[]);
