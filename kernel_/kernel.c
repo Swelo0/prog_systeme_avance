@@ -16,7 +16,7 @@ typedef struct stat_t {
 stat_t stat;
 
 void kernel() {
-	char str[256], sect[512], filename[32];
+	char str[256], sect[512], filename[filename_size];
 	stat.name[0] = '\0';
 	stat.size = 0;
 	
