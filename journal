@@ -60,3 +60,19 @@ Parcours itératif :
 ----------
  - Fonctions iterator / getstats (kernel_/)
 	==> Erreur : Need scalar (index = (first_fe_sect) + (position / 2);)
+	
+-----------------------
+Du 11.12.14 au 16.12.14
+-----------------------
+
+-Fonction iterator débuggé, à première vue fonctionnelle MAIS
+	-l'assignation sur le pointeur *sector ne fonctionne pas, pas possible du coup de charger le bon secteur.
+	 Il faut donc poser des valeurs en dur dans le read_sector().
+	-donc pas moyen non plus de tester si l'itérateur fonctionne correctement au niveau de l'itération. 
+	 (incrémentation de *sectorPos et *position entre autre)
+	-Il faut trouver un moyen de renvoyer une valeur correcte dans *stat.size (passer d'un truc stocké sur 16 bits
+	 en un truc int standard. Ou alors il faut changer la structure pour que *stat.size soit en int16.
+	-la question est: peut-on réellement utiliser des pointeurs dans cette version de C?
+
+-La fonction get_stat() est a priori fonctionnelle (du moins si l'iterator fonctionne)
+	 
