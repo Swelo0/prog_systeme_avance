@@ -1,8 +1,7 @@
 prog_systeme_avance
 ===================
 
-MERCI DE PUSH SUR LE MASTER, ET NON PAS DANS LA BRANCHE "Etape 2 fonctionnelle" !!
-
-Bisou sur la fesse droite,
-
-Sylvain
+- Implémentation en C sous Linux fonctionnelle du système de fichier.
+- Chargement du système de fichier sur le disk virtuel OK
+- Fonction get_stat()
+- Iterator buggé :'(
