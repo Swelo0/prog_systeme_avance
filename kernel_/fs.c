@@ -1,5 +1,9 @@
 #include "fs.h"
 
+int* sectorPos;
+int* sector;
+int* position;
+
 int str_comp(char *str1, char *str2, int size1, int size2){
 	int i;
 	if(size1 != size2)
@@ -18,10 +22,10 @@ int get_stat(char *filename, struct stat_t *stat) {
 	*sector = 0;
 
 	// Itérer tant qu'on a pas le bon fichier
-	//while ((str_comp(filename, (*stat).name, filename_size, filename_size) != 0) && (ret == 0)){
+	while ((str_comp(filename, (*stat).name, filename_size, filename_size) != 0) && (ret == 0)){
 		
 		ret = iterator(filename, &position, stat);
-	//}
+	}
 	
 	// Gérer les erreurs
 	if (ret == -1) { 
@@ -69,12 +73,12 @@ int iterator(char *filename, int* position, struct stat_t *stat){
 	// File Entry 0/1 = Secteur 12	
 	do {					
 		if(*position == 0)
-			*sector = first_fe_sect;
+			*sector = 14;
 		
 		//sectorPos = 0 si première partie du secteur, 1 si deuxième partie du secteur		
 		*sectorPos = *position % 2;
 			
-		read_sector(*sector, &sectBuf);
+		read_sector(14, &sectBuf);
 		
 		if(*sectorPos == 0)
 			*sector++;
@@ -86,6 +90,20 @@ int iterator(char *filename, int* position, struct stat_t *stat){
 			return -1;
 		
 	} while (sectBuf[0] == '\0');
+	
+	print_string("Valeur de position: \r\n");
+	print_string((char*) *position);
+	print_string("\r\n");
+	
+	print_string("Valeur de sectPos: \r\n");
+	print_string((char*) *sectorPos);
+	print_string("\r\n");
+	
+	if(*sector==14){
+		print_string("Valeur de sector: \r\n");
+		print_string((char*) *sector);
+		print_string("\r\n");
+	}
 	
 	j = 0;
 	//On récupère le nom du fichier
@@ -100,6 +118,12 @@ int iterator(char *filename, int* position, struct stat_t *stat){
 		}else
 			break;
 	}
+	
+	print_string("La valeur actuelle de la structure est:\r\n Nom: ");
+	print_string((*stat).name);
+	print_string("\r\n Taille: ");
+	print_string((*stat).size);
+	print_string(" bits.\r\n");
 	
 	return 0;
 }

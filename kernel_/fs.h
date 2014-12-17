@@ -13,12 +13,6 @@ typedef struct stat_t {
 
 char sectBuf[512];
 
-int* sectorPos;
-int* sector;
-int* position;
-int  currentPosition;
-int  currentSector;
-
 extern void print_string(char *str)             ;
 extern void read_sector (int sector, uchar *buf);
 extern void print_char  (char c)                ;
@@ -27,6 +21,6 @@ int str_comp(char *str1, char *str2, int size1, int size2);
 int get_stat   (char *filename, stat_t *stat)      		  ;
 int read_file  (char *filename, unsigned char *buf)		  ;
 int remove_file(char *filename)                    		  ;
-int iterator(char *filename, int* position, struct stat_t *stat);     		  ;
+int iterator(char *filename, int* position, int* sector, int* sectorPos, struct stat_t *stat);
 
 #endif
