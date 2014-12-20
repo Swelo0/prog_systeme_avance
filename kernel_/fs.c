@@ -78,7 +78,7 @@ int iterator(char *filename, int* position, struct stat_t *stat){
 		//sectorPos = 0 si première partie du secteur, 1 si deuxième partie du secteur		
 		*sectorPos = *position % 2;
 			
-		read_sector(14, &sectBuf);
+		read_sector(sector, &sectBuf);
 		
 		if(*sectorPos == 0)
 			*sector++;
@@ -91,39 +91,24 @@ int iterator(char *filename, int* position, struct stat_t *stat){
 		
 	} while (sectBuf[0] == '\0');
 	
-	print_string("Valeur de position: \r\n");
-	print_string((char*) *position);
-	print_string("\r\n");
-	
-	print_string("Valeur de sectPos: \r\n");
-	print_string((char*) *sectorPos);
-	print_string("\r\n");
-	
-	if(*sector==14){
-		print_string("Valeur de sector: \r\n");
-		print_string((char*) *sector);
-		print_string("\r\n");
-	}
-	
 	j = 0;
 	//On récupère le nom du fichier
 	for(i = ((*sectorPos)*256); i < ((*sectorPos)*256+32); i++)
 		(*stat).name[j++] += sectBuf[i];
 	//On récupère la taille du fichier
 	for(i = ((*sectorPos)*256+32); i < ((*sectorPos)*256+33); i++)
-		(*stat).size += ((int)sectBuf[i] + (int)sectBuf[i+1]*16);
+		(*stat).size == ((int)sectBuf[i] + (int)sectBuf[i+1]*16);
+		
+	//ça beug donc osef pr le moment. need ça pour read_file()
 	for(i = ((*sectorPos)*256+34); i < ((*sectorPos)*256+256); i+2){
-		if(sectBuf[i] == 0){
-			(*stat).nbBlocks += 1;
+		if(sectBuf[i] != 0){
+			break;
 		}else
 			break;
 	}
 	
-	print_string("La valeur actuelle de la structure est:\r\n Nom: ");
+	print_string("Le caca c'est delicieux\r\n");
 	print_string((*stat).name);
-	print_string("\r\n Taille: ");
-	print_string((*stat).size);
-	print_string(" bits.\r\n");
 	
 	return 0;
 }
