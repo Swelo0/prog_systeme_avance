@@ -26,10 +26,6 @@ int get_stat(char *filename, struct stat_t *stat) {
 	// Itérer tant qu'on a pas le bon fichier
 	while ((str_comp(filename, stat->name, filename_size, filename_size) != 0) && (ret == 0)){
 		ret = iterator(filename, stat);
-		if(str_comp(filename, stat->name, filename_size, filename_size) == 0) 
-			print_string("Comparaison ok\r\n");
-		else
-			print_string("Comparaison caca\r\n");
 	}
 	
 	// Gérer les erreurs
@@ -47,7 +43,7 @@ int get_stat(char *filename, struct stat_t *stat) {
 	}
 	
 	print_string("La taille du fichier ");
-	print_string((*stat).name);
+	print_string(stat->name);
 	print_string(" est de ");
 	print_string((*stat).size);
 	print_string(" bits.\r\n");
@@ -99,19 +95,9 @@ int iterator(char *filename, struct stat_t *stat){
 	//On récupère le nom du fichier
 	for(i = ((sectorPos)*256); i < ((sectorPos)*256+32); i++)
 		stat->name[j++] = sectBuf[i];
-	stat->name[j++] = '\0';
 	//On récupère la taille du fichier
 	for(i = ((sectorPos)*256+32); i < ((sectorPos)*256+33); i++)
 		stat->size == ((int)sectBuf[i] + (int)sectBuf[i+1]*16);
-
-		
-	//ça beug donc osef pr le moment. need ça pour read_file()
-	for(i = ((sectorPos)*256+34); i < ((sectorPos)*256+256); i+2){
-		if(sectBuf[i] != 0){
-			break;
-		}else
-			break;
-	}
 	
 	return 0;
 }
