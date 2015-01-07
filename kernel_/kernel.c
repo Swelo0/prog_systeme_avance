@@ -28,7 +28,7 @@ void kernel() {
 	interrupt(0x80, 1, filename, 0, 0); // print_string
 	interrupt(0x80, 1, "\r\n", 0, 0); // print_string	
 	
-	interrupt(0x80, 5, filename, &stat, 0); // get_stat() du fichier "test.txt"
+	interrupt(0x80, 5, filename, &stat, 0); // get_stat() du fichier filename
 	
 	while(1);
 }

@@ -1,14 +1,16 @@
 #include "fs.h"
 
-int* sectorPos;
-int* sector;
-int* position;
+int sectorPos;
+int sector;
+int position;
+
+//Ce qui ne marche pas:
+//Lors de la comparaison avec str_comp, malgré le fait que filename et
+//stat->name soient identiques, la focntion retourne -1
 
 int str_comp(char *str1, char *str2, int size1, int size2){
 	int i;
-	if(size1 != size2)
-		return -1;
-	for(i = 0; i < size1; i++){
+	for(i = 0; i < size1-1; i++){
 		if(str1[i] != str2[i])
 			return -1;
 	}
@@ -17,14 +19,17 @@ int str_comp(char *str1, char *str2, int size1, int size2){
 
 int get_stat(char *filename, struct stat_t *stat) {
 	int ret = 0;
-	*sectorPos = 0;
-	*position = 0;
-	*sector = 0;
-
+	sectorPos = 0;
+	position = 0;
+	sector = 0;
+	
 	// Itérer tant qu'on a pas le bon fichier
-	while ((str_comp(filename, (*stat).name, filename_size, filename_size) != 0) && (ret == 0)){
-		
-		ret = iterator(filename, &position, stat);
+	while ((str_comp(filename, stat->name, filename_size, filename_size) != 0) && (ret == 0)){
+		ret = iterator(filename, stat);
+		if(str_comp(filename, stat->name, filename_size, filename_size) == 0) 
+			print_string("Comparaison ok\r\n");
+		else
+			print_string("Comparaison caca\r\n");
 	}
 	
 	// Gérer les erreurs
@@ -60,32 +65,31 @@ int remove_file(char *filename, struct stat_t *stat) {
 }
 
 //Iterateur pour trouver un fichier
-int iterator(char *filename, int* position, struct stat_t *stat){
+int iterator(char *filename, struct stat_t *stat){
 
 	int index;
 	int i;
 	int j;
 		
 	// Test de validité
-	if ((*position >= file_entries_num) || (*position < 0)) return -2;
+	if ((position >= file_entries_num) || (position < 0)) return -2;
 
 	// 2 File Entries par secteur
-	// File Entry 0/1 = Secteur 12	
+	// File Entry 0/1 = Secteur 14	
 	do {					
-		if(*position == 0)
-			*sector = 14;
+		if(position == 0)
+			sector = 14;
 		
 		//sectorPos = 0 si première partie du secteur, 1 si deuxième partie du secteur		
-		*sectorPos = *position % 2;
+		sectorPos = position % 2;
 			
 		read_sector(sector, &sectBuf);
 		
-		if(*sectorPos == 0)
-			*sector++;
+		if(sectorPos == 0)
+			sector++;
 			
-		if (*position < file_entries_num){
-			*position += 1;
-		}
+		if (position < file_entries_num)
+			position += 1;
 		else
 			return -1;
 		
@@ -93,22 +97,21 @@ int iterator(char *filename, int* position, struct stat_t *stat){
 	
 	j = 0;
 	//On récupère le nom du fichier
-	for(i = ((*sectorPos)*256); i < ((*sectorPos)*256+32); i++)
-		(*stat).name[j++] += sectBuf[i];
+	for(i = ((sectorPos)*256); i < ((sectorPos)*256+32); i++)
+		stat->name[j++] = sectBuf[i];
+	stat->name[j++] = '\0';
 	//On récupère la taille du fichier
-	for(i = ((*sectorPos)*256+32); i < ((*sectorPos)*256+33); i++)
-		(*stat).size == ((int)sectBuf[i] + (int)sectBuf[i+1]*16);
+	for(i = ((sectorPos)*256+32); i < ((sectorPos)*256+33); i++)
+		stat->size == ((int)sectBuf[i] + (int)sectBuf[i+1]*16);
+
 		
 	//ça beug donc osef pr le moment. need ça pour read_file()
-	for(i = ((*sectorPos)*256+34); i < ((*sectorPos)*256+256); i+2){
+	for(i = ((sectorPos)*256+34); i < ((sectorPos)*256+256); i+2){
 		if(sectBuf[i] != 0){
 			break;
 		}else
 			break;
 	}
-	
-	print_string("Le caca c'est delicieux\r\n");
-	print_string((*stat).name);
 	
 	return 0;
 }
